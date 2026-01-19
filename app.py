@@ -1,9 +1,3 @@
-import os
-from flask import Flask, render_template_string
-
-app = Flask(__name__)
-
-HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -159,14 +153,10 @@ HTML_TEMPLATE = """
             if (confirm("Clear ALL marked points?")) { points = []; draw(); }
         }
 
-        // --- INPUT HANDLING ---
-
-        // Laptop Mouse Click
         canvas.addEventListener('mousedown', (e) => {
             handleInput(e.clientX, e.clientY);
         });
 
-        // Phone Touch (Fixed double-counting)
         canvas.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
                 isPanning = true;
@@ -174,7 +164,6 @@ HTML_TEMPLATE = """
                 lastTouchX = (e.touches[0].pageX + e.touches[1].pageX) / 2;
                 lastTouchY = (e.touches[0].pageY + e.touches[1].pageY) / 2;
             } else if (e.touches.length === 1) {
-                // Prevent mobile browser from simulating a mouse click after touch
                 e.preventDefault(); 
                 handleInput(e.touches[0].clientX, e.touches[0].clientY);
             }
@@ -260,13 +249,3 @@ HTML_TEMPLATE = """
     </script>
 </body>
 </html>
-"""
-
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def catch_all(path):
-    return render_template_string(HTML_TEMPLATE)
-
-if __name__ == '__main__':
-    # Use 0.0.0.0 to allow your phone to connect
-    app.run(host='0.0.0.0', port=5000, debug=True)
